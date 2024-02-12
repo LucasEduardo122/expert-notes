@@ -1,6 +1,6 @@
 'use client'
 
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import NewNoteCard from "./components/new-note-card";
 import { NoteCard } from "./components/note-card";
 
@@ -12,15 +12,19 @@ interface PropsCard {
 
 export default function Home() {
   const [search, setSearch] = useState<string>('');
-  const [notes, setNotes] = useState<PropsCard[]>(() => {
-    const notesStorage = localStorage.getItem('notes');
+  const [notes, setNotes] = useState<PropsCard[]>([]);
 
-    if(notesStorage) {
-      return JSON.parse(notesStorage)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const notesStorage = localStorage.getItem('notes');
+  
+      if (notesStorage) {
+         return setNotes(JSON.parse(notesStorage));
+      }
     }
-
-    return []
-  });
+  
+    return setNotes([]);
+  }, []);
 
   function onNoteCreated(content: string) {
     const newNote = {
